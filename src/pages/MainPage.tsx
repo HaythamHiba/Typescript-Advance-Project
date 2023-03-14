@@ -38,7 +38,7 @@ export default function MainPage({notes,tags,onDeleteTag,onChangeTagLabel}:MainP
 
   return (
     
-    <Container className="m-3">
+    <Container >
         <Row className='align-items-center mb-4'>
             <Col>
                 <h1>
@@ -92,9 +92,9 @@ export default function MainPage({notes,tags,onDeleteTag,onChangeTagLabel}:MainP
               
             </Form>
 
-            <Row xl="4" lg="3" md="2" sm="2" xs="1">
+            <Row xl="4" lg="3" md="3" sm="2" xs="1">
                 {
-                    filteredNotes.map(note=><Col className='m-1' key={note.id}>
+                    filteredNotes.map(note=><Col className='my-1' key={note.id}>
                     <NoteToDisplay note={note}/>
                     </Col>)
                 }
