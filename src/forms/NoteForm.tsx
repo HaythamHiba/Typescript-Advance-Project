@@ -2,21 +2,23 @@ import { useRef, useState } from 'react';
 import {Form,Stack,Row,Col,Button} from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom';
 import CreatableReactSelect from "react-select/creatable";
-import {  NoteData, Tag } from './App';
+import {  Note, NoteData, Tag } from '../App';
 import {v4 as uuidV4} from 'uuid'
 
 type NoteFormProps={
   submitForm:(data:NoteData)=>void
   createTag:(data:Tag)=>void
   availableOptions:Tag[]
+  note?:NoteData | null
+  
 }
 
-export default function NoteForm({submitForm,createTag,availableOptions}:NoteFormProps) {
+export default function NoteForm({submitForm,note,createTag,availableOptions}:NoteFormProps) {
 
 
   const titleRef=useRef<HTMLInputElement>(null);
   const markdownRef=useRef<HTMLTextAreaElement>(null);
-  const [selectedTags,setSelectedTags]=useState<Tag[]>([]);
+  const [selectedTags,setSelectedTags]=useState<Tag[]>(note?.tags || []);
   const navigate=useNavigate();
   function handleSubmit(e:any){
     e.preventDefault();
@@ -38,7 +40,7 @@ export default function NoteForm({submitForm,createTag,availableOptions}:NoteFor
           <Col>
             <Form.Group controlId='title'>
               <Form.Label>Title</Form.Label>
-              <Form.Control ref={titleRef} required/>
+              <Form.Control defaultValue={note?.title || ""} ref={titleRef} required/>
             </Form.Group>
           </Col>
           <Col>
@@ -59,7 +61,7 @@ export default function NoteForm({submitForm,createTag,availableOptions}:NoteFor
         </Row>
         <Form.Group controlId='markdown'>
               <Form.Label>Mark Down</Form.Label>
-              <Form.Control ref={markdownRef} required as="textarea" rows={15}/>
+              <Form.Control ref={markdownRef} defaultValue={note?.markdown|| ""} required as="textarea" rows={15}/>
             </Form.Group>
       </Stack>
       <Stack direction='horizontal' gap={2} className="justify-content-end my-5">

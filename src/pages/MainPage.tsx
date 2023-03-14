@@ -1,9 +1,9 @@
 import React from 'react'
 import { Button, Col, Container, Form, Row, Stack } from 'react-bootstrap'
-import { Note ,Tag} from './App'
+import { Note ,Tag} from '../App'
 import Select from 'react-select'
 import { Link } from 'react-router-dom'
-import NoteToDisplay from './NoteToDisplay'
+import NoteToDisplay from '../components/NoteToDisplay'
 
 type MainPageProps={
     notes:Note[]
@@ -35,7 +35,7 @@ export default function MainPage({notes,tags}:MainPageProps) {
                     </Link>
                     
                     <Button variant='outline-secondary'>
-                        Edit
+                        Edit Tags
                     </Button>
                     
                 </Stack>
@@ -54,7 +54,7 @@ export default function MainPage({notes,tags}:MainPageProps) {
                     </Col>
                     <Col>
                     
-                        <Form.Group controlId='tags'>
+                        <Form.Group controlId='selectedtags'>
                     <Form.Label>Tags</Form.Label>
                         <Select
                         isMulti
@@ -74,7 +74,7 @@ export default function MainPage({notes,tags}:MainPageProps) {
 
             <Row xl="4" lg="3" md="2" sm="2" xs="1">
                 {
-                    filteredNotes.map(note=><Col key={note.id}>
+                    filteredNotes.map(note=><Col className='m-1' key={note.id}>
                     <NoteToDisplay note={note}/>
                     </Col>)
                 }

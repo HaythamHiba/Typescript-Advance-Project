@@ -1,5 +1,5 @@
-import { NoteData, Tag } from "./App";
-import NoteForm from "./NoteForm";
+import { NoteData, Tag } from "../App";
+import NoteForm from "../forms/NoteForm";
 
 type NewNoteProps={
   submitForm:(data:NoteData)=>void

@@ -1,11 +1,14 @@
 import React from 'react'
 import "bootstrap/dist/css/bootstrap.min.css"
 import { Container } from "react-bootstrap";
-import {Routes,Route,Navigate} from 'react-router';
-import NewNode from "./NewNote";
-import {useLocalStorage} from './useLocalStorage';
+import {Routes,Route,Navigate, useNavigate} from 'react-router';
+import NewNote from "./pages/NewNote";
+import {useLocalStorage} from './hooks/useLocalStorage';
 import {v4 as uuidV4} from 'uuid'
-import MainPage from './MainPage';
+import MainPage from './pages/MainPage';
+import NoteData from './components/NoteData';
+import SingleNote from './pages/SingleNote';
+import EditNote from './pages/EditNote';
 
 export type RawNote={
   id:string
@@ -36,6 +39,7 @@ function App() {
 
   const [notes,setNotes]=useLocalStorage<RawNote[]>("NOTES",[]);
   const [tags,setTags]=useLocalStorage<Tag[]>("TAGS",[]);
+  const navigate=useNavigate();
   
   const noteWithTags=React.useMemo(()=>{
     return notes.map(note=>{
@@ -53,19 +57,41 @@ function App() {
 
 
   }
+  const onEditNote=(id:string,{tags,...data}:NoteData)=>{
+
+    setNotes(prevNotes => {
+       return prevNotes.map(note=>{
+          if(note.id===id){
+            return {...note,...data,tagIds:tags.map(tag=>tag.id)}
+          }
+          else{
+            return note;
+          }
+        })
+    })
+
+
+  }
   const onCreateTag=(data:Tag)=>{
 
     setTags(prev=>[...prev,{...data}])
   }
+  const onDeleteNote=(id:string)=>{
+    setNotes(prevNotes=>{
+      return prevNotes.filter(note=>note.id!==id)
+    })
+    navigate("/")
+    
+  }
 
   return (
-    <Container>
+    <Container className='my-4'>
       <Routes>
-        <Route path="/" element={<MainPage notes={noteWithTags} tags={tags}/>}/>
-        <Route path="/new" element={<NewNode availableOptions={tags} createTag={onCreateTag} submitForm={onCreateNote}/>}/>
-        <Route path="/:id">
-          <Route index element={<h1>Show</h1>} />
-          <Route path="edit" element={<h1>Edit</h1>}/>
+        <Route path="/" element={<MainPage notes={noteWithTags}  tags={tags}/>}/>
+        <Route path="/new" element={<NewNote availableOptions={tags} createTag={onCreateTag} submitForm={onCreateNote}/>}/>
+        <Route path="/:id" element={<NoteData notes={noteWithTags}/>}>
+          <Route index element={<SingleNote deleteNote={onDeleteNote}/>} />
+          <Route path="edit" element={<EditNote availableOptions={tags} createTag={onCreateTag} submitForm={onEditNote}/>}/>
         </Route>
         <Route path="*" element={<Navigate to="/"/>}/>
         <Route/>
