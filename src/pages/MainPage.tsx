@@ -4,20 +4,40 @@ import { Note ,Tag} from '../App'
 import Select from 'react-select'
 import { Link } from 'react-router-dom'
 import NoteToDisplay from '../components/NoteToDisplay'
+import EditTagsModal from '../components/EditTagsModal'
 
 type MainPageProps={
     notes:Note[]
     tags:Tag[]
+    onDeleteTag:(id:string)=>void
+    onChangeTagLabel:(id:string,label:string)=>void
 }
-export default function MainPage({notes,tags}:MainPageProps) {
+export default function MainPage({notes,tags,onDeleteTag,onChangeTagLabel}:MainPageProps) {
+
     const [selectedTags,setSelectedTags]=React.useState<Tag[]>([]);
+
     const [title,setTitle]=React.useState("");
 
+    const [openModal,setOpenModal]=React.useState(false);
+
     const filteredNotes=React.useMemo(()=>notes.filter(note=>{
-        return (title === "" || note.title.toLowerCase().includes(title.toLowerCase()))
-        && (selectedTags.length === 0 || selectedTags.every(seltag=>note.tags.some(tag=>tag.id===seltag.id)))
+        return (
+                title === "" ||
+                note.title.toLowerCase().includes(title.toLowerCase())
+               )
+               &&
+               (
+                selectedTags.length === 0 ||
+                selectedTags.every(seltag=>note.tags.some(tag=>tag.id===seltag.id))
+               )
     }),[notes,title,selectedTags])
+
+    const handleEditTagsModalClose=()=>{
+        setOpenModal(false);
+    }
+
   return (
+    
     <Container className="m-3">
         <Row className='align-items-center mb-4'>
             <Col>
@@ -34,7 +54,7 @@ export default function MainPage({notes,tags}:MainPageProps) {
                     </Button>
                     </Link>
                     
-                    <Button variant='outline-secondary'>
+                    <Button onClick={()=>setOpenModal(true)} variant='outline-secondary'>
                         Edit Tags
                     </Button>
                     
@@ -83,7 +103,7 @@ export default function MainPage({notes,tags}:MainPageProps) {
             
      
         
-        
+        <EditTagsModal deleteTag={onDeleteTag} changeTagLabel={onChangeTagLabel} handleClose={handleEditTagsModalClose} openModal={openModal} tags={tags}/>
     </Container>
   )
 }

@@ -83,11 +83,26 @@ function App() {
     navigate("/")
     
   }
+  const onDeleteTag=(id:string)=>{
+    setTags(prev=>{
+      return prev.filter(tag=>tag.id!==id)
+    })
+  }
+  const onChangeTagLabel=(id:string,label:string)=>{
+    setTags(prev=>{
+      return prev.map(tag=>{
+        if(tag.id===id){
+          return {...tag,label}
+        }else return tag
+      })
+    })
+  }
+
 
   return (
     <Container className='my-4'>
       <Routes>
-        <Route path="/" element={<MainPage notes={noteWithTags}  tags={tags}/>}/>
+        <Route path="/" element={<MainPage onChangeTagLabel={onChangeTagLabel} onDeleteTag={onDeleteTag} notes={noteWithTags}  tags={tags}/>}/>
         <Route path="/new" element={<NewNote availableOptions={tags} createTag={onCreateTag} submitForm={onCreateNote}/>}/>
         <Route path="/:id" element={<NoteData notes={noteWithTags}/>}>
           <Route index element={<SingleNote deleteNote={onDeleteNote}/>} />
